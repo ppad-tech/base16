@@ -43,7 +43,7 @@ expand_w8 b =
 
 encode :: BS.ByteString -> BS.ByteString
 encode bs@(BI.PS _ _ l)
-    | l < 128 = to_strict_small loop
+    | l < 64    = to_strict_small loop
     | otherwise = to_strict loop
   where
     loop
