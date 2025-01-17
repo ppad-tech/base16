@@ -1,7 +1,16 @@
+{-# OPTIONS_HADDOCK prune #-}
 {-# LANGUAGE ApplicativeDo #-}
 {-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE BinaryLiterals #-}
 {-# LANGUAGE OverloadedStrings #-}
+
+-- |
+-- Module: Data.ByteString.Base16
+-- Copyright: (c) 2025 Jared Tobin
+-- License: MIT
+-- Maintainer: Jared Tobin <jared@ppad.tech>
+--
+-- base16 encoding and decoding of strict bytestrings.
 
 module Data.ByteString.Base16 (
     encode
@@ -41,6 +50,10 @@ expand_w8 b =
       .|. fi lo
 {-# INLINE expand_w8 #-}
 
+-- | Encode a base256 'ByteString' as base16.
+--
+--   >>> encode "hello world"
+--   "68656c6c6f20776f726c64"
 encode :: BS.ByteString -> BS.ByteString
 encode bs@(BI.PS _ _ l)
     | l < 64    = to_strict_small loop
@@ -101,6 +114,15 @@ encode bs@(BI.PS _ _ l)
 word4 :: Word8 -> Maybe Word8
 word4 w8 = fmap fi (BS.elemIndex w8 hex_charset)
 
+-- | Decode a base16 'ByteString' to base256.
+--
+--   Invalid inputs (including odd-length inputs) will produce
+--   'Nothing'.
+--
+--   >>> decode "68656c6c6f20776f726c64"
+--   Just "hello world"
+--   >>> decode "068656c6c6f20776f726c64" -- odd-length
+--   Nothing
 decode :: BS.ByteString -> Maybe BS.ByteString
 decode bs@(BI.PS _ _ l)
     | B.testBit l 0    = Nothing
