@@ -12,8 +12,8 @@ import qualified "base16" Data.ByteString.Base16 as R1
 
 main :: IO ()
 main = defaultMain [
-    encode
-  , decode
+    minimal_encode
+  , minimal_decode
   ]
 
 minimal_encode :: Benchmark

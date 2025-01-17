@@ -59,6 +59,8 @@ encode bs@(BI.PS _ _ l)
     | l < 64    = to_strict_small loop
     | otherwise = to_strict loop
   where
+    -- writing as few words as possible requires performing some length
+    -- checks up front
     loop
       | l `rem` 4 == 0 = go64 bs
       | (l - 3) `rem` 4 == 0 = case BS.splitAt (l - 3) bs of
@@ -113,6 +115,7 @@ encode bs@(BI.PS _ _ l)
 
 word4 :: Word8 -> Maybe Word8
 word4 w8 = fmap fi (BS.elemIndex w8 hex_charset)
+{-# INLINE word4 #-}
 
 -- | Decode a base16 'ByteString' to base256.
 --
@@ -129,6 +132,7 @@ decode bs@(BI.PS _ _ l)
     | l `quot` 2 < 128 = fmap to_strict_small loop
     | otherwise        = fmap to_strict loop
   where
+    -- same story, but we need more checks
     loop
       | l `rem` 16 == 0       = go64 mempty bs
       | (l - 2) `rem` 16 == 0 = case BS.splitAt (l - 2) bs of
