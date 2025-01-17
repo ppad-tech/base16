@@ -43,7 +43,6 @@ test-suite base16-tests
     , bytestring
     , ppad-base16
     , tasty
-    , tasty-hunit
     , tasty-quickcheck
 
 benchmark base16-bench
