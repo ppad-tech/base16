@@ -10,7 +10,7 @@
 -- License: MIT
 -- Maintainer: Jared Tobin <jared@ppad.tech>
 --
--- base16 encoding and decoding of strict bytestrings.
+-- Pure base16 encoding and decoding of strict bytestrings.
 
 module Data.ByteString.Base16 (
     encode
