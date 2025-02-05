@@ -62,22 +62,31 @@ encode bs@(BI.PS _ _ l)
     -- writing as few words as possible requires performing some length
     -- checks up front
     loop
-      | l `rem` 4 == 0 = go64 bs
+      | l `rem` 4 == 0 =
+               go64 bs
       | (l - 3) `rem` 4 == 0 = case BS.splitAt (l - 3) bs of
           (chunk, etc) ->
                go64 chunk
             <> go32 (BU.unsafeTake 2 etc)
             <> go16 (BU.unsafeDrop 2 etc)
       | (l - 2) `rem` 4 == 0 = case BS.splitAt (l - 2) bs of
-          (chunk, etc) -> go64 chunk <> go32 etc
+          (chunk, etc) ->
+               go64 chunk
+            <> go32 etc
       | (l - 1) `rem` 4 == 0 = case BS.splitAt (l - 1) bs of
-          (chunk, etc) -> go64 chunk <> go16 etc
+          (chunk, etc) ->
+               go64 chunk
+            <> go16 etc
 
-      | l `rem` 2 == 0 = go32 bs
+      | l `rem` 2 == 0 =
+               go32 bs
       | (l - 1) `rem` 2 == 0 = case BS.splitAt (l - 1) bs of
-          (chunk, etc) -> go32 chunk <> go16 etc
+          (chunk, etc) ->
+               go32 chunk
+            <> go16 etc
 
-      | otherwise = go16 bs
+      | otherwise =
+               go16 bs
 
     go64 b = case BS.splitAt 4 b of
       (chunk, etc)
@@ -134,7 +143,8 @@ decode bs@(BI.PS _ _ l)
   where
     -- same story, but we need more checks
     loop
-      | l `rem` 16 == 0       = go64 mempty bs
+      | l `rem` 16 == 0 =
+            go64 mempty bs
       | (l - 2) `rem` 16 == 0 = case BS.splitAt (l - 2) bs of
           (chunk, etc) -> do
             b0 <- go64 mempty chunk
@@ -169,7 +179,8 @@ decode bs@(BI.PS _ _ l)
             b2 <- go16 b1 (BU.unsafeTake 4 (BU.unsafeDrop 8 etc))
             go8 b2 (BU.unsafeDrop 12 etc)
 
-      | l `rem` 8 == 0       = go32 mempty bs
+      | l `rem` 8 == 0 =
+            go32 mempty bs
       | (l - 2) `rem` 8 == 0 = case BS.splitAt (l - 2) bs of
           (chunk, etc) -> do
             b0 <- go32 mempty chunk
@@ -184,13 +195,15 @@ decode bs@(BI.PS _ _ l)
             b1 <- go16 b0 (BU.unsafeTake 4 etc)
             go8 b1  (BU.unsafeDrop 4 etc)
 
-      | l `rem` 4 == 0       = go16 mempty bs
+      | l `rem` 4 == 0 =
+            go16 mempty bs
       | (l - 2) `rem` 4 == 0 = case BS.splitAt (l - 2) bs of
           (chunk, etc) -> do
             b0 <- go16 mempty chunk
             go8 b0 etc
 
-      | otherwise = go8 mempty bs
+      | otherwise =
+            go8 mempty bs
 
     go64 acc b = case BS.splitAt 16 b of
       (chunk, etc)
