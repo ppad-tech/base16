@@ -1,6 +1,7 @@
 # ppad-base16
 
 [![](https://img.shields.io/hackage/v/ppad-base16?color=blue)](https://hackage.haskell.org/package/ppad-base16)
+![](https://img.shields.io/badge/license-MIT-brightgreen)
 
 A pure implementation of base16 encoding & decoding on strict
 ByteStrings.
