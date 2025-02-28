@@ -122,8 +122,12 @@ encode bs@(BI.PS _ _ l)
         let !w16 = expand_w8 h
         in  BSB.word16BE w16 <> go16 t
 
+-- word8 hex character to word4
 word4 :: Word8 -> Maybe Word8
-word4 w8 = fmap fi (BS.elemIndex w8 hex_charset)
+word4 c
+  | c > 47 && c < 58  = pure $! c - 48
+  | c > 96 && c < 103 = pure $! c - 87
+  | otherwise         = Nothing
 {-# INLINE word4 #-}
 
 -- | Decode a base16 'ByteString' to base256.
