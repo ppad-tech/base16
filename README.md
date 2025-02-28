@@ -45,12 +45,11 @@ like (use `cabal bench` to run the benchmark suite):
   mean                 5.975 μs   (5.913 μs .. 6.057 μs)
   std dev              233.1 ns   (172.4 ns .. 310.0 ns)
 
-  benchmarking decode/ppad-base16
-  time                 4.942 μs   (4.884 μs .. 4.995 μs)
-                       0.999 R²   (0.998 R² .. 0.999 R²)
-  mean                 4.908 μs   (4.854 μs .. 4.964 μs)
-  std dev              176.8 ns   (150.3 ns .. 214.3 ns)
-  variance introduced by outliers: 46% (moderately inflated)
+  benchmarking ppad-base16
+  time                 2.510 μs   (2.454 μs .. 2.590 μs)
+                       0.994 R²   (0.989 R² .. 0.997 R²)
+  mean                 2.599 μs   (2.543 μs .. 2.671 μs)
+  std dev              216.3 ns   (175.9 ns .. 272.8 ns)
 ```
 
 ## Security
