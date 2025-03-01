@@ -2,6 +2,7 @@
 
 [![](https://img.shields.io/hackage/v/ppad-base16?color=blue)](https://hackage.haskell.org/package/ppad-base16)
 ![](https://img.shields.io/badge/license-MIT-brightgreen)
+[![](https://img.shields.io/badge/haddock-base16-lightyellow)](https://docs.ppad.tech/base16)
 
 A pure implementation of base16 encoding & decoding on strict
 ByteStrings.
