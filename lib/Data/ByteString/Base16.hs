@@ -125,8 +125,9 @@ encode bs@(BI.PS _ _ l)
 -- word8 hex character to word4
 word4 :: Word8 -> Maybe Word8
 word4 c
-  | c > 47 && c < 58  = pure $! c - 48
-  | c > 96 && c < 103 = pure $! c - 87
+  | c > 47 && c < 58  = pure $! c - 48 -- 0-9
+  | c > 64 && c < 71  = pure $! c - 55 -- A-F
+  | c > 96 && c < 103 = pure $! c - 87 -- a-f
   | otherwise         = Nothing
 {-# INLINE word4 #-}
 
