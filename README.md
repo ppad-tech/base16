@@ -4,8 +4,7 @@
 ![](https://img.shields.io/badge/license-MIT-brightgreen)
 [![](https://img.shields.io/badge/haddock-base16-lightblue)](https://docs.ppad.tech/base16)
 
-A pure implementation of base16 encoding & decoding on strict
-ByteStrings.
+Pure base16 encoding & decoding on strict ByteStrings.
 
 ## Usage
 
@@ -33,8 +32,8 @@ Haddocks (API documentation, etc.) are hosted at
 ## Performance
 
 The aim is best-in-class performance for pure, highly-auditable Haskell
-code. We could go slightly faster by direct allocation and writes, but
-we get pretty close to the best impure versions with only builders.
+code. We could go slightly faster by using direct allocation and writes,
+but we get pretty close to the best impure versions with only builders.
 
 Current benchmark figures on 1kb inputs on a relatively-beefy NixOS VPS look
 like (use `cabal bench` to run the benchmark suite):

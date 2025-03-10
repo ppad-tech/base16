@@ -9,6 +9,7 @@ import qualified "ppad-base16" Data.ByteString.Base16 as B16
 import qualified "base16-bytestring" Data.ByteString.Base16 as R0
 import Test.Tasty
 import qualified Test.Tasty.QuickCheck as Q
+import qualified Test.Tasty.HUnit as H
 
 newtype BS = BS BS.ByteString
   deriving (Eq, Show)
@@ -48,6 +49,14 @@ decode_matches_reference (BS bs) =
           Left _ -> False
           Right d0 -> du == d0
 
+case_handled :: TestTree
+case_handled = H.testCase "decodes uppercase hex" $ do
+  let lhex = "deadbeef"
+      uhex = "DEADBEEF"
+  case liftA2 (,) (B16.decode lhex) (B16.decode uhex) of
+    Nothing -> H.assertBool mempty False
+    Just (a, b) -> H.assertEqual mempty a b
+
 main :: IO ()
 main = defaultMain $
   testGroup "ppad-base16" [
@@ -58,6 +67,9 @@ main = defaultMain $
         Q.withMaxSuccess 5000 encode_matches_reference
     , Q.testProperty "decode matches reference" $
         Q.withMaxSuccess 5000 decode_matches_reference
+    ]
+  , testGroup "unit tests" [
+      case_handled
     ]
   ]
 
