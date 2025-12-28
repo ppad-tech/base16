@@ -39,17 +39,18 @@ Current benchmark figures on 1kb inputs on a relatively-beefy NixOS VPS look
 like (use `cabal bench` to run the benchmark suite):
 
 ```
-  benchmarking encode/ppad-base16
-  time                 7.634 μs   (7.543 μs .. 7.749 μs)
-                       0.999 R²   (0.998 R² .. 0.999 R²)
-  mean                 7.693 μs   (7.622 μs .. 7.768 μs)
-  std dev              240.6 ns   (196.5 ns .. 324.8 ns)
+  benchmarking ppad-base16
+  time                 2.997 μs   (2.988 μs .. 3.009 μs)
+                       1.000 R²   (1.000 R² .. 1.000 R²)
+  mean                 3.024 μs   (3.012 μs .. 3.035 μs)
+  std dev              39.14 ns   (36.12 ns .. 42.87 ns)
+  variance introduced by outliers: 11% (moderately inflated)
 
   benchmarking ppad-base16
-  time                 1.893 μs   (1.871 μs .. 1.919 μs)
-                       0.998 R²   (0.998 R² .. 0.999 R²)
-  mean                 1.897 μs   (1.871 μs .. 1.924 μs)
-  std dev              91.64 ns   (74.26 ns .. 118.2 ns)
+  time                 599.0 ns   (597.3 ns .. 601.3 ns)
+                       1.000 R²   (1.000 R² .. 1.000 R²)
+  mean                 597.3 ns   (596.3 ns .. 598.5 ns)
+  std dev              3.493 ns   (2.623 ns .. 5.111 ns)
 ```
 
 ## Security

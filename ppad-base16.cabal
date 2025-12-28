@@ -1,6 +1,6 @@
 cabal-version:      3.0
 name:               ppad-base16
-version:            0.2.0
+version:            0.2.1
 synopsis:           Pure base16 encoding and decoding on bytestrings.
 license:            MIT
 license-file:       LICENSE
@@ -8,10 +8,15 @@ author:             Jared Tobin
 maintainer:         jared@ppad.tech
 category:           Cryptography
 build-type:         Simple
-tested-with:        GHC == 9.8.1
+tested-with:        GHC == { 9.10.3 }
 extra-doc-files:    CHANGELOG
 description:
   Pure base16 (hexadecimal) encoding and decoding on bytestrings.
+
+flag llvm
+  description: Use GHC's LLVM backend.
+  default:     False
+  manual:      True
 
 source-repository head
   type:     git
@@ -22,6 +27,8 @@ library
   hs-source-dirs:   lib
   ghc-options:
       -Wall
+  if flag(llvm)
+    ghc-options: -fllvm -O2
   exposed-modules:
       Data.ByteString.Base16
   build-depends:

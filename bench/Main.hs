@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
+{-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE PackageImports #-}
 
@@ -17,11 +18,16 @@ main = defaultMain [
   ]
 
 minimal_encode :: Benchmark
-minimal_encode = bench "ppad-base16" $ nf B16.encode (BS.replicate 1024 0x00)
+minimal_encode =
+  let !a = BS.replicate 1024 0x00
+  in  bench "ppad-base16/encode" $
+        nf B16.encode a
 
 minimal_decode :: Benchmark
-minimal_decode = bench "ppad-base16" $ nf B16.decode
-  (B16.encode (BS.replicate 512 0x00))
+minimal_decode =
+  let !a = B16.encode (BS.replicate 512 0x00)
+  in  bench "ppad-base16/decode" $
+        nf B16.decode a
 
 encode :: Benchmark
 encode = bgroup "encode" [
