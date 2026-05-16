@@ -53,14 +53,20 @@ enc_tab =
   \f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff"
 {-# NOINLINE enc_tab #-}
 
--- 256-byte table.  Index by an ASCII byte to obtain its nibble value;
--- valid hex chars map to 0x10..0x1f, invalid bytes to 0x20.  The shift
--- keeps every entry in the range 0x10..0x20 — strictly ASCII and free
--- of embedded NUL — so the bytestring 'IsString' rule rewrites this to
--- 'unsafePackAddress' and the bytes live in static rodata alongside
--- 'enc_tab'.  Validity is then 'acc .&. 0x20 == 0'; the low-nibble
--- math in 'decode' is unchanged ('shiftL' 4 in 'Word8' drops the high
--- bit, '.&. 0x0f' extracts the value).
+-- 256-byte table.  Index by an ASCII byte to obtain its nibble; valid
+-- hex chars ('0'..'9', 'a'..'f', 'A'..'F') map to 0x10..0x1f, every
+-- other byte maps to 0x20.
+--
+-- The encoding is chosen so the literal is strictly ASCII and contains
+-- no embedded NUL, which is what the bytestring 'IsString' rule needs
+-- to rewrite it into 'unsafePackAddress' (cf. 'enc_tab') — the bytes
+-- end up in static rodata, with no CAF allocation.
+--
+-- The 0x20 sentinel is distinguished by bit 5; no value 0x10..0x1f
+-- carries that bit, so 'decode' OR-folds every lookup into an
+-- accumulator and tests 'acc .&. 0x20 == 0' once at the end.  The
+-- output byte is '(n0 `shiftL` 4) .|. (n1 .&. 0x0f)': in 'Word8' the
+-- shift naturally drops bit 4, and the mask isolates the low nibble.
 dec_tab :: BS.ByteString
 dec_tab =
   "\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\
