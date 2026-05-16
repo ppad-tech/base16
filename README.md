@@ -31,26 +31,23 @@ Haddocks (API documentation, etc.) are hosted at
 
 ## Performance
 
-The aim is best-in-class performance for pure, highly-auditable Haskell
-code. We could go slightly faster by using direct allocation and writes,
-but we get pretty close to the best impure versions with only builders.
+The aim is best-in-class performance.
 
-Current benchmark figures on 1kb inputs on a relatively-beefy NixOS VPS look
-like (use `cabal bench` to run the benchmark suite):
+Current benchmark figures on 1kb inputs on my M4 MacBook Air look like
+(use `cabal bench -fllvm` to run the benchmark suite):
 
 ```
-  benchmarking ppad-base16
-  time                 2.997 μs   (2.988 μs .. 3.009 μs)
-                       1.000 R²   (1.000 R² .. 1.000 R²)
-  mean                 3.024 μs   (3.012 μs .. 3.035 μs)
-  std dev              39.14 ns   (36.12 ns .. 42.87 ns)
-  variance introduced by outliers: 11% (moderately inflated)
+  benchmarking ppad-base16/encode
+  time                 295.9 ns   (295.4 ns .. 296.4 ns)
+                       1.000 R²   (0.999 R² .. 1.000 R²)
+  mean                 296.8 ns   (296.4 ns .. 297.2 ns)
+  std dev              1.367 ns   (1.181 ns .. 1.619 ns)
 
-  benchmarking ppad-base16
-  time                 599.0 ns   (597.3 ns .. 601.3 ns)
+  benchmarking ppad-base16/decode
+  time                 270.8 ns   (270.6 ns .. 271.1 ns)
                        1.000 R²   (1.000 R² .. 1.000 R²)
-  mean                 597.3 ns   (596.3 ns .. 598.5 ns)
-  std dev              3.493 ns   (2.623 ns .. 5.111 ns)
+  mean                 270.9 ns   (270.7 ns .. 271.1 ns)
+  std dev              627.8 ps   (515.3 ps .. 766.1 ps)
 ```
 
 ## Security
