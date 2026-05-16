@@ -1,7 +1,7 @@
 cabal-version:      3.0
 name:               ppad-base16
-version:            0.2.1
-synopsis:           Pure base16 encoding and decoding on bytestrings.
+version:            0.3.0
+synopsis:           Fast base16 encoding and decoding on bytestrings.
 license:            MIT
 license-file:       LICENSE
 author:             Jared Tobin
@@ -11,7 +11,7 @@ build-type:         Simple
 tested-with:        GHC == { 9.10.3 }
 extra-doc-files:    CHANGELOG
 description:
-  Pure base16 (hexadecimal) encoding and decoding on bytestrings.
+  Fast base16 (hexadecimal) encoding and decoding on bytestrings.
 
 flag llvm
   description: Use GHC's LLVM backend.

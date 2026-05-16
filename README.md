@@ -4,7 +4,7 @@
 ![](https://img.shields.io/badge/license-MIT-brightgreen)
 [![](https://img.shields.io/badge/haddock-base16-lightblue)](https://docs.ppad.tech/base16)
 
-Pure base16 encoding & decoding on strict ByteStrings.
+Fast base16 encoding & decoding on strict ByteStrings.
 
 ## Usage
 
