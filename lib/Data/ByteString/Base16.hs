@@ -19,9 +19,9 @@ import qualified Data.Bits as B
 import Data.Bits ((.&.), (.|.))
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Internal as BI
-import Data.Word (Word8)
+import Data.Word (Word8, Word16)
 import Foreign.ForeignPtr (withForeignPtr)
-import Foreign.Ptr (Ptr, plusPtr)
+import Foreign.Ptr (Ptr, castPtr, plusPtr)
 import Foreign.Storable (peekElemOff, pokeElemOff)
 import System.IO.Unsafe (unsafeDupablePerformIO)
 
@@ -98,18 +98,21 @@ encode (BI.PS sfp soff l) =
       BI.unsafeCreate (l `B.shiftL` 1) $ \dst ->
         withForeignPtr sfp $ \sp0 ->
         withForeignPtr tfp $ \tp0 -> do
+          -- read 'enc_tab' and write 'dst' as 'Word16' pairs.  The
+          -- two-byte block at 'enc_tab[2*b]' and the two-byte block
+          -- at 'dst[2*i]' share the same byte layout in memory, so
+          -- this is endianness-safe: we never inspect the numerical
+          -- value of the 'Word16', we just shuffle 16 bits between
+          -- two locations.
           let !sp = sp0 `plusPtr` soff :: Ptr Word8
-              !tp = tp0 `plusPtr` toff :: Ptr Word8
+              !tp = tp0 `plusPtr` toff :: Ptr Word16
+              !dp = castPtr dst        :: Ptr Word16
               loop !i
                 | i == l    = pure ()
                 | otherwise = do
                     b <- peekElemOff sp i
-                    let !j = fi b `B.shiftL` 1
-                        !o = i `B.shiftL` 1
-                    hi <- peekElemOff tp j
-                    lo <- peekElemOff tp (j + 1)
-                    pokeElemOff dst  o      hi
-                    pokeElemOff dst (o + 1) lo
+                    w <- peekElemOff tp (fi b)
+                    pokeElemOff dp i (w :: Word16)
                     loop (i + 1)
           loop 0
 
