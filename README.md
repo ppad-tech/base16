@@ -1,4 +1,4 @@
-# base16
+# ppad-base16
 
 [![](https://img.shields.io/hackage/v/ppad-base16?color=blue)](https://hackage.haskell.org/package/ppad-base16)
 ![](https://img.shields.io/badge/license-MIT-brightgreen)
@@ -31,24 +31,26 @@ Haddocks (API documentation, etc.) are hosted at
 
 ## Performance
 
-The aim is best-in-class performance.
-
-Current benchmark figures on 1kb inputs on my M4 MacBook Air look like
-(use `cabal bench -fllvm` to run the benchmark suite):
+The aim is best-in-class performance. Current benchmark figures on 1kb
+inputs on an M4 Silicon MacBook Air, where we avail of hardware
+acceleration via ARM NEON intrinsics, look like (use `cabal bench` to
+run the benchmark suite):
 
 ```
   benchmarking ppad-base16/encode
-  time                 295.9 ns   (295.4 ns .. 296.4 ns)
-                       1.000 R²   (0.999 R² .. 1.000 R²)
-  mean                 296.8 ns   (296.4 ns .. 297.2 ns)
-  std dev              1.367 ns   (1.181 ns .. 1.619 ns)
+  time                 60.45 ns   (60.29 ns .. 60.65 ns)
+                       1.000 R²   (1.000 R² .. 1.000 R²)
+  mean                 60.59 ns   (60.42 ns .. 60.78 ns)
+  std dev              587.6 ps   (465.2 ps .. 776.7 ps)
 
   benchmarking ppad-base16/decode
-  time                 270.8 ns   (270.6 ns .. 271.1 ns)
+  time                 76.03 ns   (75.93 ns .. 76.15 ns)
                        1.000 R²   (1.000 R² .. 1.000 R²)
-  mean                 270.9 ns   (270.7 ns .. 271.1 ns)
-  std dev              627.8 ps   (515.3 ps .. 766.1 ps)
+  mean                 76.04 ns   (75.94 ns .. 76.16 ns)
+  std dev              373.0 ps   (285.3 ps .. 555.3 ps)
 ```
+
+You should compile with the 'llvm' flag for maximum performance.
 
 ## Security
 
