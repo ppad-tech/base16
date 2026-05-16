@@ -18,6 +18,7 @@ module Data.ByteString.Base16 (
 import qualified Data.Bits as B
 import Data.Bits ((.&.), (.|.))
 import qualified Data.ByteString as BS
+import qualified Data.ByteString.Base16.Arm as Arm
 import qualified Data.ByteString.Internal as BI
 import Data.Word (Word8, Word16)
 import Foreign.ForeignPtr (withForeignPtr)
@@ -89,10 +90,35 @@ dec_tab =
 
 -- | Encode a base256 'ByteString' as base16.
 --
+--   Uses ARM NEON extensions when available, otherwise a pure
+--   Haskell scalar loop.
+--
 --   >>> encode "hello world"
 --   "68656c6c6f20776f726c64"
 encode :: BS.ByteString -> BS.ByteString
-encode (BI.PS sfp soff l) =
+encode bs
+  | Arm.base16_arm_available = Arm.encode bs
+  | otherwise = encode_scalar bs
+{-# INLINABLE encode #-}
+
+-- | Decode a base16 'ByteString' to base256.
+--
+--   Uses ARM NEON extensions when available, otherwise a pure
+--   Haskell scalar loop.  Invalid inputs (including odd-length
+--   inputs) will produce 'Nothing'.
+--
+--   >>> decode "68656c6c6f20776f726c64"
+--   Just "hello world"
+--   >>> decode "068656c6c6f20776f726c64" -- odd-length
+--   Nothing
+decode :: BS.ByteString -> Maybe BS.ByteString
+decode bs
+  | Arm.base16_arm_available = Arm.decode bs
+  | otherwise = decode_scalar bs
+{-# INLINABLE decode #-}
+
+encode_scalar :: BS.ByteString -> BS.ByteString
+encode_scalar (BI.PS sfp soff l) =
   case enc_tab of
     BI.PS tfp toff _ ->
       BI.unsafeCreate (l `B.shiftL` 1) $ \dst ->
@@ -116,17 +142,8 @@ encode (BI.PS sfp soff l) =
                     loop (i + 1)
           loop 0
 
--- | Decode a base16 'ByteString' to base256.
---
---   Invalid inputs (including odd-length inputs) will produce
---   'Nothing'.
---
---   >>> decode "68656c6c6f20776f726c64"
---   Just "hello world"
---   >>> decode "068656c6c6f20776f726c64" -- odd-length
---   Nothing
-decode :: BS.ByteString -> Maybe BS.ByteString
-decode (BI.PS sfp soff l)
+decode_scalar :: BS.ByteString -> Maybe BS.ByteString
+decode_scalar (BI.PS sfp soff l)
   | B.testBit l 0 = Nothing
   | otherwise = case dec_tab of
       BI.PS tfp toff _ -> unsafeDupablePerformIO $ do
