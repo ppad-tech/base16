@@ -53,22 +53,32 @@ enc_tab =
   \f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff"
 {-# NOINLINE enc_tab #-}
 
--- 256-byte table.  Index by an ASCII byte to obtain its nibble value
--- (0..15); invalid bytes map to 0x80.  Built once at first use, with
--- no intermediate list (which would balloon CAF allocation).
+-- 256-byte table.  Index by an ASCII byte to obtain its nibble value;
+-- valid hex chars map to 0x10..0x1f, invalid bytes to 0x20.  The shift
+-- keeps every entry in the range 0x10..0x20 — strictly ASCII and free
+-- of embedded NUL — so the bytestring 'IsString' rule rewrites this to
+-- 'unsafePackAddress' and the bytes live in static rodata alongside
+-- 'enc_tab'.  Validity is then 'acc .&. 0x20 == 0'; the low-nibble
+-- math in 'decode' is unchanged ('shiftL' 4 in 'Word8' drops the high
+-- bit, '.&. 0x0f' extracts the value).
 dec_tab :: BS.ByteString
-dec_tab = BI.unsafeCreate 256 $ \p ->
-  let go !i
-        | i == 256  = pure ()
-        | otherwise = pokeElemOff p i (nib i) >> go (i + 1)
-  in  go 0
-  where
-    nib :: Int -> Word8
-    nib c
-      | c >= 0x30 && c <= 0x39 = fi (c - 0x30) -- '0'..'9'
-      | c >= 0x41 && c <= 0x46 = fi (c - 0x37) -- 'A'..'F'
-      | c >= 0x61 && c <= 0x66 = fi (c - 0x57) -- 'a'..'f'
-      | otherwise              = 0x80
+dec_tab =
+  "\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\
+  \\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\
+  \\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\
+  \\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x20\x20\x20\x20\x20\x20\
+  \\x20\x1a\x1b\x1c\x1d\x1e\x1f\x20\x20\x20\x20\x20\x20\x20\x20\x20\
+  \\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\
+  \\x20\x1a\x1b\x1c\x1d\x1e\x1f\x20\x20\x20\x20\x20\x20\x20\x20\x20\
+  \\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\
+  \\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\
+  \\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\
+  \\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\
+  \\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\
+  \\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\
+  \\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\
+  \\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\
+  \\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20"
 {-# NOINLINE dec_tab #-}
 
 -- | Encode a base256 'ByteString' as base16.
@@ -120,7 +130,7 @@ decode (BI.PS sfp soff l)
                     !tp = tp0 `plusPtr` toff :: Ptr Word8
                     loop !i !acc
                       | i == n    =
-                          pure $! acc .&. 0x80 == 0
+                          pure $! acc .&. 0x20 == 0
                       | otherwise = do
                           let !o = i `B.shiftL` 1
                           c0 <- peekElemOff sp  o
