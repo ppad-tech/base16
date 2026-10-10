@@ -23,4 +23,4 @@ main = W.mainWith $ do
 
   W.func "ppad-base16 (decode)" B16.decode hinp
   W.func "base16-bytestring (decode)" R0.decode hinp
-  W.func "base16 (decode)" R1.decodeBase16Untyped inp
+  W.func "base16 (decode)" R1.decodeBase16Untyped hinp
