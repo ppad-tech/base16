@@ -1,6 +1,6 @@
 cabal-version:      3.0
 name:               ppad-base16
-version:            0.3.0
+version:            0.3.1
 synopsis:           Fast base16 encoding and decoding on bytestrings.
 license:            MIT
 license-file:       LICENSE

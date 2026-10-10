@@ -1,5 +1,13 @@
 # Changelog
 
+- 0.3.1 (2026-10-10)
+  * The portable implementation now lives in an internal
+    'Data.ByteString.Base16.Pure' module, and
+    'Data.ByteString.Base16.Arm' is no longer exposed. Both are hidden
+    internal modules; the public API is unchanged.
+  * Expands the test suite to exercise both the NEON and portable
+    implementations, including on invalid inputs.
+
 - 0.3.0 (2026-05-16)
   * Features order-of-magnitude performance improvements in both
     encoding and decoding, especially on ARM platforms where NEON
