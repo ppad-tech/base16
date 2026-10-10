@@ -101,7 +101,6 @@ benchmark base16-weigh
     , base16
     , base16-bytestring
     , bytestring
-    , criterion
     , ppad-base16
     , weigh
 
