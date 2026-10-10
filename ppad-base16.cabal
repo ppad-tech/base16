@@ -36,6 +36,8 @@ library
     ghc-options: -fllvm -O2
   exposed-modules:
       Data.ByteString.Base16
+      Data.ByteString.Base16.Pure
+  other-modules:
       Data.ByteString.Base16.Arm
   build-depends:
       base >= 4.9 && < 5
